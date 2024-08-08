@@ -26,9 +26,12 @@ sudo vi /etc/gobgp/gobgpd.conf
 
 sudo gobgpd -f /etc/gobgp/gobgpd.conf  &
 ```
-## run AznetPerfTester
+## Run AznetPerfTester
 ```Bash
 git clone https://github.com/rfujishige/AznetPerfTester.git
 cd AznetPerfTester/
 go run main.go &
 ```
+
+## Access to :8080
+http://<IP>:8080
