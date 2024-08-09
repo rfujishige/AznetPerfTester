@@ -104,12 +104,22 @@ func addRouteTakusanHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func chechVPNstatus(w http.ResponseWriter, r *http.Request) {
+	out, err := exec.Command("ipsec", "statusall").Output()
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	fmt.Fprintf(w, string(out))
+}
+
 func main() {
 	http.HandleFunc("/checkRoutes", checkRoutesHandler)
 	http.HandleFunc("/checkNeighbor", checkNeighborHandler)
 	http.HandleFunc("/addNeighbor", addNeighborHandler)
 	http.HandleFunc("/addRoute", addRouteHandler)
 	http.HandleFunc("/addRouteTakusan", addRouteTakusanHandler)
+	http.HandleFunc("/chechVPNstatus", chechVPNstatus)
 	http.HandleFunc("/", defaultHandler)
 	http.ListenAndServe(":8080", nil)
 }
