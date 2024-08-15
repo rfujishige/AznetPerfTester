@@ -142,13 +142,14 @@ func addVpnConnection(w http.ResponseWriter, r *http.Request) {
 		}
 		t.Execute(f, swanconf)
 
-		err = exec.Command("systemctl", "restart", "ipsec").Run()
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-		time.Sleep(1)
-
+		/*
+			err = exec.Command("systemctl", "restart", "ipsec").Run()
+			if err != nil {
+				log.Fatal(err)
+				return
+			}
+			time.Sleep(1)
+		*/
 		err = exec.Command("swanctl", "--load-all").Run()
 		if err != nil {
 			log.Fatal(err)
