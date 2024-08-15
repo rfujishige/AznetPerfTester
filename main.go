@@ -5,9 +5,19 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
 	"strconv"
+	"time"
 )
+
+type swanctlConf struct {
+	Local_addrs       string
+	Local_publicAddrs string
+	Remote_addrs0     string
+	Remote_addrs1     string
+	Psk               string
+}
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("./htmlTemplates/index.html")
@@ -104,6 +114,73 @@ func addRouteTakusanHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func addVpnConnection(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		t, _ := template.ParseFiles("./htmlTemplates/addVpnConnection.html")
+		t.Execute(w, nil)
+	}
+
+	if r.Method == "POST" {
+
+		f, err := os.Create("/etc/swanctl/swanctl.conf")
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		defer f.Close()
+
+		t, _ := template.New("swanctl.conf").ParseFiles("./configTemplates/swanctl.conf")
+		r.ParseForm()
+		data := r.Form
+
+		swanconf := swanctlConf{
+			Local_addrs:       data["Local_addrs"][0],
+			Local_publicAddrs: data["Local_publicAddrs"][0],
+			Remote_addrs0:     data["Remote_addrs0"][0],
+			Remote_addrs1:     data["Remote_addrs1"][0],
+			Psk:               data["Psk"][0],
+		}
+		t.Execute(f, swanconf)
+
+		err = exec.Command("systemctl", "restart", "ipsec").Run()
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		time.Sleep(1)
+
+		err = exec.Command("swanctl", "--load-all").Run()
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		time.Sleep(1)
+
+		err = exec.Command("swanctl", "--initiate", "--ike", "vng0", "--child", "s2s0").Start()
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		time.Sleep(1)
+
+		err = exec.Command("swanctl", "--initiate", "--ike", "vng1", "--child", "s2s0").Start()
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		time.Sleep(1)
+
+		out, err := exec.Command("ipsec", "statusall").Output()
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		time.Sleep(1)
+
+		fmt.Fprintf(w, string(out))
+	}
+}
+
 func chechVPNstatus(w http.ResponseWriter, r *http.Request) {
 	out, err := exec.Command("ipsec", "statusall").Output()
 	if err != nil {
@@ -119,6 +196,7 @@ func main() {
 	http.HandleFunc("/addNeighbor", addNeighborHandler)
 	http.HandleFunc("/addRoute", addRouteHandler)
 	http.HandleFunc("/addRouteTakusan", addRouteTakusanHandler)
+	http.HandleFunc("/addVpnConnection", addVpnConnection)
 	http.HandleFunc("/chechVPNstatus", chechVPNstatus)
 	http.HandleFunc("/", defaultHandler)
 	http.ListenAndServe(":8080", nil)
