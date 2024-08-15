@@ -172,15 +172,15 @@ func addVpnConnection(w http.ResponseWriter, r *http.Request) {
 		}
 		time.Sleep(1)
 
-		_, err = exec.Command("ipsec", "statusall").Output()
+		out, err := exec.Command("ipsec", "status").Output()
 		if err != nil {
 			log.Fatal(err)
 			return
 		}
 		time.Sleep(1)
 
-		//fmt.Fprintf(w, string(out))
-		http.HandleFunc("/chechVPNstatus", chechVPNstatus)
+		fmt.Fprintf(w, string(out))
+
 	}
 }
 
