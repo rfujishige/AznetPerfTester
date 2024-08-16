@@ -20,7 +20,7 @@ type swanctlConf struct {
 }
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("./htmlTemplates/index.html")
+	t, _ := template.ParseFiles("/opt/AznetPerfTester/htmlTemplates/index.html")
 	t.Execute(w, nil)
 }
 
@@ -44,12 +44,12 @@ func checkRoutesHandler(w http.ResponseWriter, r *http.Request) {
 
 func addNeighborHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("./htmlTemplates/addNeighbor.html")
+		t, _ := template.ParseFiles("/opt/AznetPerfTester/htmlTemplates/addNeighbor.html")
 		t.Execute(w, nil)
 	}
 
 	if r.Method == "POST" {
-		t, _ := template.ParseFiles("./htmlTemplates/addNeighbor.html")
+		t, _ := template.ParseFiles("/opt/AznetPerfTester/htmlTemplates/addNeighbor.html")
 		t.Execute(w, nil)
 		r.ParseForm()
 		neighbor := r.Form
@@ -65,12 +65,12 @@ func addNeighborHandler(w http.ResponseWriter, r *http.Request) {
 
 func addRouteHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("./htmlTemplates/addRoute.html")
+		t, _ := template.ParseFiles("/opt/AznetPerfTester/htmlTemplates/addRoute.html")
 		t.Execute(w, nil)
 	}
 
 	if r.Method == "POST" {
-		t, _ := template.ParseFiles("./htmlTemplates/addRoute.html")
+		t, _ := template.ParseFiles("/opt/AznetPerfTester/htmlTemplates/addRoute.html")
 		t.Execute(w, nil)
 		r.ParseForm()
 		route := r.Form
@@ -86,12 +86,12 @@ func addRouteHandler(w http.ResponseWriter, r *http.Request) {
 
 func addRouteTakusanHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("./htmlTemplates/addRouteTakusan.html")
+		t, _ := template.ParseFiles("/opt/AznetPerfTester/htmlTemplates/addRouteTakusan.html")
 		t.Execute(w, nil)
 	}
 
 	if r.Method == "POST" {
-		t, _ := template.ParseFiles("./htmlTemplates/addRouteTakusan.html")
+		t, _ := template.ParseFiles("/opt/AznetPerfTester/htmlTemplates/addRouteTakusan.html")
 		t.Execute(w, nil)
 		r.ParseForm()
 		numberMap := r.Form["number"][0]
@@ -116,7 +116,7 @@ func addRouteTakusanHandler(w http.ResponseWriter, r *http.Request) {
 
 func addVpnConnection(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("./htmlTemplates/addVpnConnection.html")
+		t, _ := template.ParseFiles("/opt/AznetPerfTester/htmlTemplates/addVpnConnection.html")
 		t.Execute(w, nil)
 	}
 
@@ -129,7 +129,7 @@ func addVpnConnection(w http.ResponseWriter, r *http.Request) {
 		}
 		defer f.Close()
 
-		t, _ := template.New("swanctl.conf").ParseFiles("./configTemplates/swanctl.conf")
+		t, _ := template.New("swanctl.conf").ParseFiles("/opt/AznetPerfTester/configTemplates/swanctl.conf")
 		r.ParseForm()
 		data := r.Form
 
