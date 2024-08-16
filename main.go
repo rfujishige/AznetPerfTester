@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -190,25 +189,25 @@ func chechVPNstatus(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 		return
 	}
+	/*
+		TemplateFuncs := map[string]interface{}{
+			// Replaces newlines with <br>
+			"nl2br": func(text string) template.HTML {
+				return template.HTML(strings.Replace(template.HTMLEscapeString(text), "\n", "<br>", -1))
+			},
+		}
 
-	TemplateFuncs := map[string]interface{}{
-		// Replaces newlines with <br>
-		"nl2br": func(text string) template.HTML {
-			return template.HTML(strings.Replace(template.HTMLEscapeString(text), "\n", "<br>", -1))
-		},
-	}
+		t, _ := template.New("default.html").Funcs(TemplateFuncs).ParseFiles("./htmlTemplates/default.html")
 
-	t, _ := template.New("default.html").Funcs(TemplateFuncs).ParseFiles("./htmlTemplates/default.html")
-
-	t.Execute(w,
-		struct {
-			Message string
-		}{
-			Message: string(out),
-		},
-	)
-
-	//fmt.Fprintf(w, string(out))
+		t.Execute(w,
+			struct {
+				Message string
+			}{
+				Message: string(out),
+			},
+		)
+	*/
+	fmt.Fprintf(w, string(out))
 }
 
 func main() {
